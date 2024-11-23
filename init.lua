@@ -172,7 +172,20 @@ require('lazy').setup({
       },
     },
   },
-
+  {
+    'S1M0N38/love2d.nvim',
+    cmd = 'LoveRun',
+    opts = {
+      path_to_love_bin = '/Applications/love.app/Contents/MacOS/love',
+      path_to_love_library = vim.fn.globpath(vim.o.runtimepath, 'love2d/library'),
+      restart_on_save = false,
+    },
+    keys = {
+      { '<leader>v', ft = 'lua', desc = 'LÖVE' },
+      { '<leader>vv', '<cmd>LoveRun<cr>', ft = 'lua', desc = 'Run LÖVE' },
+      { '<leader>vs', '<cmd>LoveStop<cr>', ft = 'lua', desc = 'Stop LÖVE' },
+    },
+  },
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -494,8 +507,8 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
+        gopls = {},
+        pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -514,6 +527,20 @@ require('lazy').setup({
             Lua = {
               completion = {
                 callSnippet = 'Replace',
+                diagnostics = {
+                  globals = { 'vim', 'love' },
+                },
+                workspace = {
+                  library = {
+                    [vim.fn.expand '$VIMRUNTIME/lua'] = true,
+                    [vim.fn.expand '$VIMRUNTIME/lua/vim/lsp'] = true,
+                    [vim.fn.stdpath 'data' .. '/lazy/ui/nvchad_types'] = true,
+                    [vim.fn.stdpath 'data' .. '/lazy/lazy.nvim/lua/lazy'] = true,
+                    [vim.fn.expand '${3rd}/love2d/library'] = true,
+                  },
+                  maxPreload = 100000,
+                  preloadFileSize = 10000,
+                },
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               -- diagnostics = { disable = { 'missing-fields' } },
